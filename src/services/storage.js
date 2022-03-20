@@ -3,6 +3,6 @@ export function saveLocal(key, value) {
 }
 
 export function loadLocal(key) {
-  localStorage.getItem(key);
+  return localStorage.getItem(key);
 }
 

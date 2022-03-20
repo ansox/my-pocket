@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getUserToken } from '../../services/pocket';
+import { authorizeUser } from '../../services/pocket';
 import { loadLocal, saveLocal } from '../../services/storage';
 
 export default function LoadingPage() {
@@ -9,7 +9,7 @@ export default function LoadingPage() {
   const getToken = async () => {
     try {
       const code = loadLocal('code');
-      const { access_token, username } = await getUserToken(code);
+      const { access_token, username } = await authorizeUser(code);
 
       saveLocal('access_token', access_token);
       saveLocal('username', username);
