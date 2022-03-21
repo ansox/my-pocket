@@ -10,7 +10,8 @@ const Container = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-around;
-`
+  background: linear-gradient(90deg, #edc0bf 0,#c4caef 58%);
+`;
 
 export default function HomePage() {
   const [articles, setArticles] = React.useState([]);
