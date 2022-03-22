@@ -3,6 +3,8 @@ import CardArticle from "../../components/CardArticle";
 import { retrieve } from "../../services/pocket";
 import { loadLocal } from "../../services/storage";
 import styled from "styled-components";
+import { db } from "../../services/db";
+import { useLiveQuery } from "dexie-react-hooks";
 
 const Container = styled.div`
   width: 100%;
@@ -14,21 +16,32 @@ const Container = styled.div`
 `;
 
 export default function HomePage() {
-  const [articles, setArticles] = React.useState([]);
+  // const [articles, setArticles] = React.useState([]);
+  const articles = useLiveQuery(
+    () => db.articles.toArray()
+  )
 
   function articlesToArray(articles) {
     return Object.values(articles);
   }
 
   function retrieveArticles(token) {
-      return retrieve(token).then(result => result.list);
-    };
+    return retrieve(token).then(result => result.list);
+  };
+
+  function saveArticles(articles) {
+    console.log(articles);
+    db.articles.bulkAdd(articles)
+      .catch(error => console.log(error));
+  }
 
   React.useEffect(() => {
     const initPage = async () => {
-      const token = loadLocal('access_token');
-      const result = await retrieveArticles(token);
-      setArticles(articlesToArray(result));
+      // const token = loadLocal('access_token');
+      // const result = await retrieveArticles(token);
+      // const articlesArr = articlesToArray(result);
+      // setArticles(articlesArr);
+      // saveArticles(articlesArr);
     }
     
     initPage();
@@ -36,7 +49,7 @@ export default function HomePage() {
 
   return (
     <Container>
-      {articles.map(article => {
+      {articles?.map(article => {
         return (
          <CardArticle article={article} />
         )
