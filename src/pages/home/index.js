@@ -52,9 +52,9 @@ export default function HomePage() {
 
   return (
     <Container>
-      {articles?.map(article => {
+      {articles?.map((article, index) => {
         return (
-         <CardArticle article={article} />
+         <CardArticle key={`article${index}`} article={article} />
         )
       })}
     </Container>
