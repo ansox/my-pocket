@@ -20,16 +20,16 @@ function loadLastSync() {
 }
 
 function saveLastSync() {
-  const now = new Date();
-  saveLocal('last_sync', now);
+  const unixTime = Math.floor(Date.now() / 1000);
+  saveLocal('last_sync', unixTime);
 }
 
 function articlesToArray(articles) {
   return Object.values(articles);
 }
 
-function retrieveArticles(token) {
-  return retrieve(token).then(result => result.list);
+function retrieveArticles(token, lastSync) {
+  return retrieve(token, lastSync).then(result => result.list);
 };
 
 async function loadArticleWeb(token, lastSync) {
@@ -39,7 +39,10 @@ async function loadArticleWeb(token, lastSync) {
 }
 
 async function loadArticleLocal() {
-  return db.articles.toArray();
+  return db.articles
+    .orderBy('time_added')
+    .reverse()
+    .toArray();
 }
 
 async function saveData(articles) {
