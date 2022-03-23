@@ -3,19 +3,21 @@ import styled from 'styled-components';
 
 const Card = styled.div`
   width: 300px;
-  height: 300px;
+  height: 250px;
   flex=1;
   margin: 10px;
   padding: 10px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, .7);
-	-webkit-backdrop-filter: blur(10px);
-	backdrop-filter: blur(10px);
-`
+  backdrop-filter: blur(16px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(171%);
+    -webkit-backdrop-filter: blur(20px) saturate(171%);
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    border: 1px solid rgba(209, 213, 219, 0.3);
+    `
 
 Card.img = styled.img`
-  width: 200px;
-  height: 200px;
+  width: 90%;
+  height: 180px;
   object-fit: contain; 
 `
 

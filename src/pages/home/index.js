@@ -4,7 +4,7 @@ import { retrieve } from "../../services/pocket";
 import { loadLocal } from "../../services/storage";
 import styled from "styled-components";
 import { db } from "../../services/db";
-import { useLiveQuery } from "dexie-react-hooks";
+import loadArticles from "../../services/loader";
 
 const Container = styled.div`
   width: 100%;
@@ -12,14 +12,15 @@ const Container = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-around;
-  background: linear-gradient(90deg, #edc0bf 0,#c4caef 58%);
+  background-color: #5061e3;
+  background-image: 
+    radial-gradient(at 4% 23%, hsl(162.00, 77%, 40%) 0, transparent 59%), 
+    radial-gradient(at 82% 65%, hsl(198.00, 100%, 50%) 0, transparent 55%);
 `;
 
 export default function HomePage() {
-  // const [articles, setArticles] = React.useState([]);
-  const articles = useLiveQuery(
-    () => db.articles.toArray()
-  )
+  const [articles, setArticles] = React.useState([]);
+
 
   function articlesToArray(articles) {
     return Object.values(articles);
@@ -37,6 +38,8 @@ export default function HomePage() {
 
   React.useEffect(() => {
     const initPage = async () => {
+      const articlesLoaded = await loadArticles()
+      setArticles(articlesLoaded);
       // const token = loadLocal('access_token');
       // const result = await retrieveArticles(token);
       // const articlesArr = articlesToArray(result);
