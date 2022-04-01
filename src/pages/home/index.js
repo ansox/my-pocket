@@ -1,10 +1,8 @@
 import React from "react";
 import CardArticle from "../../components/CardArticle";
-import { retrieve } from "../../services/pocket";
-import { loadLocal } from "../../services/storage";
 import styled from "styled-components";
-import { db } from "../../services/db";
 import loadArticles from "../../services/loader";
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const Container = styled.div`
   width: 100%;
@@ -18,33 +16,32 @@ const Container = styled.div`
     radial-gradient(at 82% 65%, hsl(198.00, 100%, 50%) 0, transparent 55%);
 `;
 
+
 export default function HomePage() {
   const [articles, setArticles] = React.useState([]);
+  const [hasMore, setHasMore] = React.useState(true);
+  const [visibleArticles, setVisibleArticles] = React.useState([]);
+  const [page, setPage] = React.useState(1);
 
+  const FETCH_SIZE = 20;
 
-  function articlesToArray(articles) {
-    return Object.values(articles);
-  }
+  const fetchData = () => {
+    const nextPage = page + 1;
+    const start = (FETCH_SIZE * nextPage) - 1;
+    const end = start + FETCH_SIZE;
+    const visibles = [...visibleArticles, ...articles.slice(start, end)];
 
-  function retrieveArticles(token) {
-    return retrieve(token).then(result => result.list);
-  };
-
-  function saveArticles(articles) {
-    console.log(articles);
-    db.articles.bulkAdd(articles)
-      .catch(error => console.log(error));
+    setVisibleArticles(visibles);
+    setPage(nextPage);  
   }
 
   React.useEffect(() => {
     const initPage = async () => {
       const articlesLoaded = await loadArticles()
+      const visibles = articlesLoaded.slice(0, FETCH_SIZE);
+
       setArticles(articlesLoaded);
-      // const token = loadLocal('access_token');
-      // const result = await retrieveArticles(token);
-      // const articlesArr = articlesToArray(result);
-      // setArticles(articlesArr);
-      // saveArticles(articlesArr);
+      setVisibleArticles(visibles);
     }
     
     initPage();
@@ -52,11 +49,23 @@ export default function HomePage() {
 
   return (
     <Container>
-      {articles?.map((article, index) => {
-        return (
-         <CardArticle key={`article${index}`} article={article} />
-        )
-      })}
+      <InfiniteScroll
+        dataLength={visibleArticles.length}
+        next={fetchData}
+        hasMore={hasMore}
+        loader={<h4>Loading...</h4>}
+        endMessage={
+          <p style={{ textAlign: "center" }}>
+            <b>Yay! You have seen it all</b>
+          </p>
+        }
+      >
+        {visibleArticles?.map((article, index) => {
+          return (
+          <CardArticle key={`article${index}`} article={article} />
+          )
+        })}
+      </InfiniteScroll>
     </Container>
   )
 }

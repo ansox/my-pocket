@@ -2,7 +2,7 @@ import { db } from "./db";
 import { retrieve } from "./pocket";
 import { loadLocal, saveLocal } from "./storage";
 
-export default async function loadArticles() {
+export default async function syncData() {
   const token = loadToken();
   const lastSync = loadLastSync();
   const articles = await loadArticleWeb(token, lastSync);
